@@ -14,7 +14,7 @@ class ServiceController extends Controller
      */
     public function index(Request $request)
     {
-        $services = Service::all();
+        $services = Service::with('Features')->get();
         return ServiceResource::collection($services); // wrap collection in resource
     }
 
@@ -23,7 +23,7 @@ class ServiceController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $service = Service::findOrFail($id);
+        $service = Service::with('Features')->findOrFail($id);
         return new ServiceResource($service); // single resource
     }
 }

@@ -14,19 +14,17 @@ class ServiceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $lang = $request->query('lang', 'en');
+        $lang = app()->getLocale();
 
         return [
             'id' => $this->id,
             'title' => $this->{"{$lang}_title"},
             'description' => $this->{"{$lang}_description"},
-            'feature_one' => $this->{"{$lang}_feature_one"},
-            'feature_two' => $this->{"{$lang}_feature_two"},
-            'feature_three' => $this->{"{$lang}_feature_three"},
             'button_text' => $this->{"{$lang}_button_text"},
-            'image' => $this->image,
-            'video' => $this->video,
-            'icon' => $this->icon,
+            'image' => asset('storage/'.$this->image),
+            'video' => asset('storage/'.$this->video),
+            'icon' => asset('storage/'.$this->icon),
+            'features' => ServiceFeatureResource::collection($this->whenLoaded('Features')),
         ];
     }
 }

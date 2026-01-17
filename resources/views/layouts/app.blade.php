@@ -23,7 +23,7 @@
                 ],
                 urls: ["/assets/kai/css/fonts.min.css"],
             },
-            active: function() {
+            active: function () {
                 sessionStorage.fonts = true;
             },
         });
@@ -234,15 +234,7 @@
 
             <div class="container">
                 <div class="page-inner">
-                    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-                        <div>
-                            <h3 class="fw-bold mb-3">@yield('title')</h3>
-                        </div>
-                        {{-- <div class="ms-md-auto py-2 py-md-0">
-                <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
-                <a href="#" class="btn btn-primary btn-round">Add Customer</a>
-              </div> --}}
-                    </div>
+                
                     @yield('content')
                 </div>
             </div>
@@ -314,6 +306,13 @@
     </div>
     <!--   Core JS Files   -->
     <script src="/assets/kai/js/core/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js"
+        integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
     <script src="/assets/kai/js/core/popper.min.js"></script>
     <script src="/assets/kai/js/core/bootstrap.min.js"></script>
 
@@ -335,11 +334,106 @@
     <script src="/assets/kai/js/plugin/jsvectormap/world.js"></script>
 
     <!-- Sweet Alert -->
-    <script src="/assets/kai/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+    <link
+        href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.6/b-3.2.6/b-colvis-3.2.6/b-html5-3.2.6/b-print-3.2.6/cr-2.1.2/cc-1.2.0/fc-5.0.5/fh-4.0.5/r-3.0.7/sc-2.4.3/sl-3.1.3/datatables.min.css"
+        rel="stylesheet" integrity="sha384-xoN2lIKAu+Jzw2hZye9H7cXA64qzhU0w57zgETfk37vRdkEQhMw/BNc6NUDvMvyn"
+        crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"
+        integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"
+        integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script
+        src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.6/b-3.2.6/b-colvis-3.2.6/b-html5-3.2.6/b-print-3.2.6/cr-2.1.2/cc-1.2.0/fc-5.0.5/fh-4.0.5/r-3.0.7/sc-2.4.3/sl-3.1.3/datatables.min.js"
+        integrity="sha384-1d2fTV69Dawauowkw+UYye/vlTiTVRk4/ygC7A18BZH5OTjuYbiWgI1P83H7vfMl"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js" integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
 
     <!-- Kaiadmin JS -->
     <script src="/assets/kai/js/kaiadmin.min.js"></script>
 </body>
+
+<script>
+
+
+
+    function reloadTable() {
+        $('#data-table').DataTable().ajax.reload();
+    }
+
+    function resetTable() {
+        $('#filter-form')[0].reset();
+        $('#data-table').DataTable().ajax.reload();
+    }
+    function previewFile(input, name) {
+        const preview = document.getElementById('preview-' + name);
+        preview.innerHTML = '';
+
+        if (!input.files || !input.files[0]) return;
+
+        // remove required when new file selected
+        input.removeAttribute('required');
+
+        const file = input.files[0];
+        const type = file.type;
+        const url = URL.createObjectURL(file);
+
+        if (type.startsWith('image/')) {
+            preview.innerHTML = `
+            <img src="${url}" class="img-fluid rounded" style="max-height:220px">
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger mt-2"
+                    onclick="removeFile('${name}')">
+                Remove file
+            </button>
+        `;
+        } else if (type.startsWith('video/')) {
+            preview.innerHTML = `
+            <video src="${url}" controls class="w-100 rounded" style="max-height:220px"></video>
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger mt-2"
+                    onclick="removeFile('${name}')">
+                Remove file
+            </button>
+        `;
+        }
+    }
+
+    function removeFile(name) {
+        const fileInput = document.getElementById('file-' + name);
+        const preview = document.getElementById('preview-' + name);
+        const removeContainer = document.getElementById('remove-input-' + name);
+
+        // clear file input
+        fileInput.value = '';
+
+        // restore required if field is required
+        if (fileInput.dataset.required === "1") {
+            fileInput.setAttribute('required', 'required');
+        }
+
+        // clear preview
+        preview.innerHTML = `<p class="text-muted small">No file selected</p>`;
+
+        // add hidden remove flag
+        removeContainer.innerHTML = `
+        <input type="hidden" name="remove_${name}" value="1">
+    `;
+    }
+
+
+</script>
 @stack('scripts')
 
 </html>

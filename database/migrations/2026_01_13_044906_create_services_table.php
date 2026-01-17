@@ -17,12 +17,6 @@ return new class extends Migration
             $table->string('en_title');
             $table->text('ar_description');
             $table->text('en_description');
-            $table->string('ar_feature_one')->nullable();
-            $table->string('en_feature_one')->nullable();
-            $table->string('ar_feature_two')->nullable();
-            $table->string('en_feature_two')->nullable();
-            $table->string('ar_feature_three')->nullable();
-            $table->string('en_feature_three')->nullable();
             $table->string('ar_button_text');
             $table->string('en_button_text');
             $table->string('image')->nullable();

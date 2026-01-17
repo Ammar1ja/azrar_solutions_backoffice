@@ -12,7 +12,9 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $homeData = Home::all(); // fetch all home records
-        return HomeResource::collection($homeData); // wrap collection in resource
+        $homeData = Home::first(); // fetch all home records
+
+
+        return successResponse(HomeResource::make($homeData),'Home data retrieved successfully');
     }
 }
