@@ -187,6 +187,9 @@ class ProjectController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $project = Project::findOrFail($id);
+        $project->delete();
+        $project->Services()->detach();
+        return successResponse('Project deleted successfully.');
     }
 }
