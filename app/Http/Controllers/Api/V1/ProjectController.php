@@ -11,7 +11,17 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
-        $projects = Project::with(['service', 'client'])->get();
+        $projects = Project::with(['Services', 'Client'])
+        ->when($request->has('service_id'), function ($query) use ($request) {
+            $query->whereHas('Services', function ($q) use ($request) {
+                $q->where('services.id', $request->input('service_id'));
+            });
+        })
+        ->when($request->has('client_id'), function ($query) use ($request) {
+            $query->where('client_id', $request->input('client_id'));
+        })
+        
+        ->get();
         return ProjectResource::collection($projects);
     }
 

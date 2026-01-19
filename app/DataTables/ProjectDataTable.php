@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\Project;
 use App\Models\Service;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 
-class ServiceDataTable extends DataTable
+class ProjectDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -20,32 +21,26 @@ class ServiceDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('image', function ($row) {
-                if (!$row->image) {
+            ->addColumn('thumbnail', function ($row) {
+                if (!$row->thumbnail) {
                     return '';
                 }
-                $url = asset('storage/' . $row->image);
+                $url = asset('storage/' . $row->thumbnail);
                 return '<img src="' . $url . '" border="0" width="50" class="img-rounded" align="center" />';
             })
 
-            ->addColumn('icon', function ($row) {
-                if (!$row->icon) {
-                    return '';
-                }
-                $url = asset('storage/' . $row->icon);
-                return '<img src="' . $url . '" border="0" width="50" class="img-rounded" align="center" />';
-            })
-            ->addColumn('features', function ($row) {
-                $features = $row->Features;
+        
+            ->addColumn('services', function ($row) {
+                $services = $row->Services;
                 $badges = '';
-                foreach ($features as $feature) {
-                    $badges .= '<span class="badge bg-primary me-1 mb-1">' . $feature->en_name . '</span>';
+                foreach ($services as $service) {
+                    $badges .= '<span class="badge bg-primary me-1 mb-1">' . $service->en_name . '</span>';
                 }
                 return $badges;
             })
             ->addColumn('action', function ($row) {
-                $editUrl = route('admin.service.edit', $row->id);
-                $deleteFunction = "deleteFunction('".route('admin.service.destroy', $row->id)."')";
+                $editUrl = route('admin.project.edit', $row->id);
+                $deleteFunction = "deleteFunction('".route('admin.project.destroy', $row->id)."')";
                 return '<div class="d-flex flex-row gap-2 align-items-center">
                 <a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>
                 <button onclick="' . $deleteFunction . '" class="btn btn-sm btn-danger">Delete</button>
@@ -58,7 +53,7 @@ class ServiceDataTable extends DataTable
             ->editColumn('updated_at', function ($row) {
                 return $row->updated_at ? $row->updated_at->format('Y-m-d H:i:s') : '';
             })
-            ->rawColumns(['image', 'icon', 'features', 'action'])
+            ->rawColumns(['thumbnail', 'service', 'action'])
             ->setRowId('id');
     }
 
@@ -67,19 +62,21 @@ class ServiceDataTable extends DataTable
      *
      * @return QueryBuilder<Service>
      */
-    public function query(Service $model): QueryBuilder
+    public function query(Project $model): QueryBuilder
     {
         return $model->newQuery()
-            ->with('Features')
-            ->when($this->request()->filled('feature'), function ($query) {
-                $feature = $this->request()->get('feature');
-                $query->whereHas('Features', function ($q) use ($feature) {
-                    $q
-                    ->where('en_name', 'like',"%".$feature."%")
-                    ->orWhere('ar_name', 'like',"%".$feature."%")
-                    ;
+            ->with(['Services','Client'])
+            ->when(request()->has('service_id') && request('service_id') != '', function ($query) {
+                $serviceId = request('service_id');
+                $query->whereHas('Services', function ($q) use ($serviceId) {
+                    $q->where('services.id', $serviceId);
                 });
             })
+            ->when(request()->has('client_id') && request('client_id') != '', function ($query) {
+                $clientId = request('client_id');
+                $query->where('client_id', $clientId);
+            })
+          
         ;
     }
 
@@ -112,15 +109,12 @@ class ServiceDataTable extends DataTable
             Column::make('id'),
             Column::make('en_title')->content('-'),
             Column::make('en_description')->content('-'),
-            Column::make('image')
+            Column::make('thumbnail')
             ->orderable(false)
             ->searchable(false)
             ->content('-'),
-            Column::make('icon')
-            ->orderable(false)
-            ->searchable(false)
-            ->content('-'),
-            Column::make('features')
+          
+            Column::make('services')
             ->orderable(false)
             ->searchable(false)
             ->content('-'),

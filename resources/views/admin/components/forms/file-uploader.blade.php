@@ -8,9 +8,8 @@
 
     <div class="file-uploader border rounded p-3">
 
-        <input type="file" class="form-control" id="file-{{ $name }}" name="{{ $name }}" accept="image/*,video/*"
-            onchange="previewFile(this, '{{ $name }}')" @required(!$value  ?? $required ?? false)
-            data-required="{{ $required ?? false }}">
+        <input type="file" class="form-control" id="file-{{ $name }}" name="{{ $name }}"
+            accept="{{ $accept ?? 'image/*,video/*' }}" onchange="previewFile(this, '{{ $name }}')" @required(!$value ?? $required ?? false) data-required="{{ $required ?? false }}">
 
         <div id="preview-{{ $name }}" class="mt-3 text-center">
             @if (!empty($value))

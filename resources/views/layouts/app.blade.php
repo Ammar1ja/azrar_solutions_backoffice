@@ -33,6 +33,8 @@
     <link rel="stylesheet" href="/assets/kai/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/assets/kai/css/plugins.min.css" />
     <link rel="stylesheet" href="/assets/kai/css/kaiadmin.min.css" />
+    <link rel="stylesheet" href="/assets/css/admin.css" />
+
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="/assets/kai/css/demo.css" />
@@ -337,6 +339,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
 
     <link
@@ -350,7 +355,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"
         integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n"
         crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script
         src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.6/b-3.2.6/b-colvis-3.2.6/b-html5-3.2.6/b-print-3.2.6/cr-2.1.2/cc-1.2.0/fc-5.0.5/fh-4.0.5/r-3.0.7/sc-2.4.3/sl-3.1.3/datatables.min.js"
         integrity="sha384-1d2fTV69Dawauowkw+UYye/vlTiTVRk4/ygC7A18BZH5OTjuYbiWgI1P83H7vfMl"
@@ -362,6 +366,7 @@
 
     <!-- Kaiadmin JS -->
     <script src="/assets/kai/js/kaiadmin.min.js"></script>
+    
 </body>
 
 <script>
@@ -432,6 +437,41 @@
     `;
     }
 
+
+
+    function deleteFunction(url) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(url)
+                    .then(function (response) {
+                        Swal.fire(
+                            'Deleted!',
+                            response.data.message || 'Your file has been deleted.',
+                            'success'
+                        );
+                        // reload datatable
+                        reloadTable();
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                        Swal.fire(
+                            'Error!',
+                            'There was an error deleting the file.',
+                            'error'
+                        );
+                    });
+            }
+        });
+        
+    }
 
 </script>
 @stack('scripts')

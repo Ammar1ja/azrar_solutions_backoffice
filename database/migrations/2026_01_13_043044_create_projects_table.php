@@ -17,19 +17,19 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Service::class);
             $table->foreignIdFor(Client::class);
             $table->string('ar_title');
             $table->string('en_title');
             $table->text('ar_description');
             $table->text('en_description');
             $table->string('project_url')->nullable();
-            $table->text('ar_project_date')->nullable();
-            $table->text('en_project_date')->nullable();
+            $table->date('date')->nullable();
             $table->string('thumbnail')->nullable();
-            $table->string('project_images')->nullable();
+            $table->text('project_images')->nullable();
             $table->string('project_video')->nullable();
             $table->boolean('featured')->default(false);
+
+            $table->timestamps();
         });
     }
 

@@ -18,7 +18,7 @@
                     @if(isset($button['onclick']))
                         onclick="{{ $button['onclick'] }}"
                     @endif
-                    class="btn btn-{{ $button['type'] ?? 'secondary' }}">
+                    class="btn btn-{{ $button['type'] ?? 'secondary' }} {{ $button['classes'] ?? '' }}">
                         {{ $button['text'] ?? 'Button' }}
                     </a>
                 @endforeach

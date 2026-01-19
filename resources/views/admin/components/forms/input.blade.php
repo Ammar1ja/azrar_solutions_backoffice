@@ -4,6 +4,6 @@
 
     @endif
 
-    <input type="text" class="form-control" id="{{ $id }}" name="{{ $name }}" value="{{ $value ?? '' }}"
+    <input type="{{ $type ?? 'text' }}" class="form-control" id="{{ $id }}" name="{{ $name }}" value="{{ $value ?? '' }}"
         @required($required ?? false)>
 </div>

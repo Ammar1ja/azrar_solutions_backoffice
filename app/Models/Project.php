@@ -7,12 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
 
-    public function service()
+    protected $fillable = [
+        'client_id',
+        'ar_title',
+        'en_title',
+        'ar_description',
+        'en_description',
+        'project_url',
+        'date',
+        'thumbnail',
+        'project_images',
+        'project_video',
+        'featured',
+    ];
+    public function Services()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsToMany(Service::class, ProjectService::class);
     }
 
-    public function client()
+    public function Client()
     {
         return $this->belongsTo(Client::class);
     }

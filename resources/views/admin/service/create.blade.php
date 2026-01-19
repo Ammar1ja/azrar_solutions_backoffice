@@ -3,10 +3,14 @@
    
     <form id="home-settings-form" method="POST" enctype="multipart/form-data">
         @csrf
+        @if (isset($service))
+            @method('PUT')
+            
+        @endif
 
         <div class="d-flex flex-column gap-2 ">
 @component('admin.components.container',[
-        'title' => 'Create Service',
+        'title' =>isset($service) ?  'Update Service' : 'Create Service',
     ])
  
 
@@ -90,7 +94,7 @@
                     'label' => 'Service Icon',
                     'required' => true,
                     'id' => 'icon',
-                    'value' => old('icon', $service->icon ?? '')
+                    'value' => old('icon', isset($service) && $service->icon ? asset('storage/'.$service->icon)  :'')
                 ])
 
                 </div>
@@ -101,7 +105,7 @@
                     'label' => 'Service Image',
                     'required' => true,
                     'id' => 'image',
-                    'value' => old('image', $service->image ?? '')
+                    'value' => old('image', isset($service) && $service->image ?  asset('storage/'.$service->image) :'')
                 ])
 
 
@@ -165,12 +169,55 @@
 
 <script>
     function addFeatureRow() {
-            let row =`@include('admin.service.components.feature-row')`;
+            let row =`@include('admin.service.components.feature-row',['is_new'=>true])`;
             row =row.replaceAll('new_row', Date.now());
             $('.features_container').append(row);
 
 
     }
+
+
+
+
+    
+          $('#home-settings-form').validate({
+
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid').removeClass('is-valid');
+            },
+            unhighlight: function (element, errorClass, validClass
+        ) {
+                $(element).addClass('is-valid').removeClass('is-invalid');
+            },
+            submitHandler: function (form) {
+                const formData = new FormData(form);
+
+
+
+                axios.post("{{isset($service) ?route('admin.service.update',$service->id) : route('admin.service.store') }}", formData)
+                    .then(response => {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.data.message || 'Service updated successfully.',
+                            
+                        });
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'An error occurred while updating settings.',
+                            text: error.response.data.message || 'Please try again later.'
+                        });
+                    });
+                return false;
+            }
+        });
+
 
 </script>
 
