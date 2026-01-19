@@ -23,7 +23,7 @@
                 ],
                 urls: ["/assets/kai/css/fonts.min.css"],
             },
-            active: function () {
+            active: function() {
                 sessionStorage.fonts = true;
             },
         });
@@ -77,27 +77,29 @@
                             <div class="collapse" id="dashboard">
                                 <ul class="nav nav-collapse">
                                     <li>
-                                        <a href="../demo1/index.html">
-                                            <span class="sub-item">Dashboard 1</span>
+                                        <a href="{{ route('admin.dashboard') }}">
+                                            <span class="sub-item">Dashboard</span>
                                         </a>
                                     </li>
                                 </ul>
                             </div>
                         </li>
+
                         <li class="nav-section">
                             <span class="sidebar-mini-icon">
                                 <i class="fa fa-ellipsis-h"></i>
                             </span>
                             <h4 class="text-section">Sections</h4>
                         </li>
+
                         {{-- Blogs --}}
                         <li class="nav-item">
-                            <a data-bs-toggle="collapse" href="#forms">
+                            <a data-bs-toggle="collapse" href="#blogs-collapse">
                                 <i class="fas fa-newspaper"></i>
                                 <p>Blogs</p>
                                 <span class="caret"></span>
                             </a>
-                            <div class="collapse" id="forms">
+                            <div class="collapse" id="blogs-collapse">
                                 <ul class="nav nav-collapse">
                                     {{-- Blogs List --}}
                                     <li>
@@ -114,74 +116,83 @@
                                 </ul>
                             </div>
                         </li>
+
                         {{-- Projects --}}
                         <li class="nav-item">
-                            <a data-bs-toggle="collapse" href="#forms">
-                                <i class="fas fa-newspaper"></i>
+                            <a data-bs-toggle="collapse" href="#projects-collapse">
+                                <i class="fas fa-briefcase"></i>
                                 <p>Projects</p>
                                 <span class="caret"></span>
                             </a>
-                            <div class="collapse" id="forms">
+                            <div class="collapse" id="projects-collapse">
                                 <ul class="nav nav-collapse">
-                                    {{-- Projects List --}}
-                                    <li>
-                                        <a href="{{ route('admin.project.index') }}">
-                                            <span class="sub-item">List</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('admin.project.create') }}">
-                                            <span class="sub-item">Create</span>
-                                        </a>
-                                    </li>
+                                    <li><a href="{{ route('admin.project.index') }}"><span
+                                                class="sub-item">List</span></a></li>
+                                    <li><a href="{{ route('admin.project.create') }}"><span
+                                                class="sub-item">Create</span></a></li>
                                 </ul>
                             </div>
                         </li>
+
                         {{-- Services --}}
                         <li class="nav-item">
-                            <a data-bs-toggle="collapse" href="#forms">
-                                <i class="fas fa-newspaper"></i>
+                            <a data-bs-toggle="collapse" href="#services-collapse">
+                                <i class="fas fa-cogs"></i>
                                 <p>Service</p>
                                 <span class="caret"></span>
                             </a>
-                            <div class="collapse" id="forms">
+                            <div class="collapse" id="services-collapse">
                                 <ul class="nav nav-collapse">
-                                    {{-- Services List --}}
+                                    <li><a href="{{ route('admin.service.index') }}"><span
+                                                class="sub-item">List</span></a></li>
+                                    <li><a href="{{ route('admin.service.create') }}"><span
+                                                class="sub-item">Create</span></a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        {{-- Clients --}}
+                        <li class="nav-item">
+                            <a data-bs-toggle="collapse" href="#clients-collapse">
+                                <i class="fas fa-users"></i>
+                                <p>Clients</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="clients-collapse">
+                                <ul class="nav nav-collapse">
+                                    <li><a href="{{ route('admin.client.index') }}"><span
+                                                class="sub-item">List</span></a></li>
+                                    <li><a href="{{ route('admin.client.create') }}"><span
+                                                class="sub-item">Create</span></a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        {{-- Countries (NEW SECTION) --}}
+                        <li class="nav-item">
+                            <a data-bs-toggle="collapse" href="#countries-collapse">
+                                <i class="fas fa-globe-americas"></i>
+                                <p>Countries</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="countries-collapse">
+                                <ul class="nav nav-collapse">
                                     <li>
-                                        <a href="{{ route('admin.service.index') }}">
+                                        {{-- Check if this route exists or change to # --}}
+                                        <a
+                                            href="{{ Route::has('admin.country.index') ? route('admin.country.index') : '#' }}">
                                             <span class="sub-item">List</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('admin.service.create') }}">
-                                            <span class="sub-item">Create</span>
+                                        <a
+                                            href="{{ Route::has('admin.country.create') ? route('admin.country.create') : '#' }}">
+                                            <span class="sub-item">Add New</span>
                                         </a>
                                     </li>
                                 </ul>
                             </div>
                         </li>
-
-
-
-                        {{-- Forms --}}
-                        {{-- <li class="nav-item">
-                            <a data-bs-toggle="collapse" href="#forms">
-                                <i class="fas fa-pen-square"></i>
-                                <p>Forms</p>
-                                <span class="caret"></span>
-                            </a>
-                            <div class="collapse" id="forms">
-                                <ul class="nav nav-collapse">
-                                    <li>
-                                        <a href="forms/forms.html">
-                                            <span class="sub-item">Basic Form</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li> --}}
-
-
                     </ul>
                 </div>
             </div>
@@ -194,8 +205,8 @@
                     <!-- Logo Header -->
                     <div class="logo-header" data-background-color="dark">
                         <a href="index.html" class="logo">
-                            <img src="/assets/kai/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand"
-                                height="20" />
+                            <img src="/assets/kai/img/kaiadmin/logo_light.svg" alt="navbar brand"
+                                class="navbar-brand" height="20" />
                         </a>
                         <div class="nav-toggle">
                             <button class="btn btn-toggle toggle-sidebar">
@@ -236,7 +247,7 @@
 
             <div class="container">
                 <div class="page-inner">
-                
+
                     @yield('content')
                 </div>
             </div>
@@ -340,7 +351,7 @@
 
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
 
@@ -350,29 +361,28 @@
         crossorigin="anonymous">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"
-        integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7"
-        crossorigin="anonymous"></script>
+        integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous">
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"
-        integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n"
-        crossorigin="anonymous"></script>
+        integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous">
+    </script>
     <script
         src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.6/b-3.2.6/b-colvis-3.2.6/b-html5-3.2.6/b-print-3.2.6/cr-2.1.2/cc-1.2.0/fc-5.0.5/fh-4.0.5/r-3.0.7/sc-2.4.3/sl-3.1.3/datatables.min.js"
-        integrity="sha384-1d2fTV69Dawauowkw+UYye/vlTiTVRk4/ygC7A18BZH5OTjuYbiWgI1P83H7vfMl"
-        crossorigin="anonymous"></script>
+        integrity="sha384-1d2fTV69Dawauowkw+UYye/vlTiTVRk4/ygC7A18BZH5OTjuYbiWgI1P83H7vfMl" crossorigin="anonymous">
+    </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js" integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"
+        integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
 
     <!-- Kaiadmin JS -->
     <script src="/assets/kai/js/kaiadmin.min.js"></script>
-    
+
 </body>
 
 <script>
-
-
-
     function reloadTable() {
         $('#data-table').DataTable().ajax.reload();
     }
@@ -381,6 +391,7 @@
         $('#filter-form')[0].reset();
         $('#data-table').DataTable().ajax.reload();
     }
+
     function previewFile(input, name) {
         const preview = document.getElementById('preview-' + name);
         preview.innerHTML = '';
@@ -451,7 +462,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 axios.delete(url)
-                    .then(function (response) {
+                    .then(function(response) {
                         Swal.fire(
                             'Deleted!',
                             response.data.message || 'Your file has been deleted.',
@@ -460,7 +471,7 @@
                         // reload datatable
                         reloadTable();
                     })
-                    .catch(function (error) {
+                    .catch(function(error) {
                         console.error(error);
                         Swal.fire(
                             'Error!',
@@ -470,9 +481,8 @@
                     });
             }
         });
-        
-    }
 
+    }
 </script>
 @stack('scripts')
 

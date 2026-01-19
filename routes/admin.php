@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -13,9 +15,11 @@ Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 Route::resource('/project', ProjectController::class);
 Route::resource('/service', ServiceController::class);
 Route::resource('/blog', BlogController::class);
+Route::resource('/client', ClientController::class);
+Route::resource('country', CountryController::class);
 
 
 
-Route::get('home',[HomeController::class,'edit'])->name('home.edit');
-Route::post('home',[HomeController::class,'update'])->name('home.update');
+Route::get('home', [HomeController::class, 'edit'])->name('home.edit');
+Route::post('home', [HomeController::class, 'update'])->name('home.update');
 // });
