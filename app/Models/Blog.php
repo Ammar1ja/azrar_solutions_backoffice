@@ -15,22 +15,19 @@ class Blog extends Model
         'title',
         'body',
         'description',
-        'category_id', // assuming you still have a category relationship
     ];
 
     /**
      * Relationship: Blog belongs to one category
      */
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
+    public function Categories(){
+        return $this->belongsToMany(Category::class,BlogCategory::class);
     }
-
     /**
      * Relationship: Blog belongs to many tags
      */
-    public function tags()
+    public function Tags()
     {
-        return $this->belongsToMany(Tag::class, 'blog_tag');
+        return $this->hasMany(related: BlogTag::class);
     }
 }

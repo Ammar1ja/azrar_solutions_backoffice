@@ -2,6 +2,7 @@
 
 namespace App\DataTables;
 
+use App\Models\Blog;
 use App\Models\Project;
 use App\Models\Service;
 use Yajra\DataTables\Html\Button;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 
-class ProjectDataTable extends DataTable
+class BlogDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -21,26 +22,26 @@ class ProjectDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('thumbnail', function ($row) {
-                if (!$row->thumbnail) {
+            ->addColumn('image', function ($row) {
+                if (!$row->image) {
                     return '';
                 }
-                $url = asset('storage/' . $row->thumbnail);
+                $url = asset('storage/' . $row->image);
                 return '<img src="' . $url . '" border="0" width="50" class="img-rounded" align="center" />';
             })
 
         
-            ->addColumn('services', function ($row) {
-                $services = $row->Services;
+            ->addColumn('categories', function ($row) {
+                $categories = $row->Categories;
                 $badges = '';
-                foreach ($services as $service) {
-                    $badges .= '<span class="badge bg-primary me-1 mb-1">' . $service->en_title . '</span>';
+                foreach ($categories as $category) {
+                    $badges .= '<span class="badge bg-primary me-1 mb-1">' . $category->name . '</span>';
                 }
                 return $badges;
             })
             ->addColumn('action', function ($row) {
-                $editUrl = route('admin.project.edit', $row->id);
-                $deleteFunction = "deleteFunction('".route('admin.project.destroy', $row->id)."')";
+                $editUrl = route('admin.blog.edit', $row->id);
+                $deleteFunction = "deleteFunction('".route('admin.blog.destroy', $row->id)."')";
                 return '<div class="d-flex flex-row gap-2 align-items-center">
                 <a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>
                 <button onclick="' . $deleteFunction . '" class="btn btn-sm btn-danger">Delete</button>
@@ -53,7 +54,15 @@ class ProjectDataTable extends DataTable
             ->editColumn('updated_at', function ($row) {
                 return $row->updated_at ? $row->updated_at->format('Y-m-d H:i:s') : '';
             })
-            ->rawColumns(['thumbnail', 'service', 'action','services'])
+       ->editColumn('description', function ($row) {
+    $text = strip_tags($row->description);
+
+    return strlen($text) > 50
+        ? substr($text, 0, 50) . '...'
+        : $text;
+})
+
+            ->rawColumns(['image', 'categories','action'])
             ->setRowId('id');
     }
 
@@ -62,20 +71,11 @@ class ProjectDataTable extends DataTable
      *
      * @return QueryBuilder<Service>
      */
-    public function query(Project $model): QueryBuilder
+    public function query(Blog $model): QueryBuilder
     {
         return $model->newQuery()
-            ->with(['Services','Client'])
-            ->when(request()->has('service_id') && request('service_id') != '', function ($query) {
-                $serviceId = request('service_id');
-                $query->whereHas('Services', function ($q) use ($serviceId) {
-                    $q->where('services.id', $serviceId);
-                });
-            })
-            ->when(request()->has('client_id') && request('client_id') != '', function ($query) {
-                $clientId = request('client_id');
-                $query->where('client_id', $clientId);
-            })
+            ->with(['Categories','Tags'])
+          
           
         ;
     }
@@ -107,14 +107,15 @@ class ProjectDataTable extends DataTable
         return [
 
             Column::make('id'),
-            Column::make('en_title')->content('-'),
-            Column::make('en_description')->content('-'),
-            Column::make('thumbnail')
+            Column::make('title')->content('-'),
+            Column::make('description')->content('-'),
+
+            Column::make('image')
             ->orderable(false)
             ->searchable(false)
             ->content('-'),
           
-            Column::make('services')
+            Column::make('categories')
             ->orderable(false)
             ->searchable(false)
             ->content('-'),

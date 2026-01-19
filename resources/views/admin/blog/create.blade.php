@@ -1,97 +1,213 @@
 @extends('layouts.app')
-
 @section('content')
-    <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h4>Create New Blog</h4>
-            </div>
-            <div class="card-body">
-                <form action="{{ route('admin.blogs.store') }}" method="POST" enctype="multipart/form-data" id="blogForm">
-                    @csrf
+   
+    <form id="home-settings-form" method="POST" enctype="multipart/form-data">
+        @csrf
+        @if (isset($blog))
+            @method('PUT')
+            
+        @endif
 
-                    <div class="form-group mb-3">
-                        <label for="title">Blog Title</label>
-                        <input type="text" name="title" class="form-control" placeholder="Enter title">
-                    </div>
+        <div class="d-flex flex-column gap-2 ">
+@component('admin.components.container',[
+        'title' =>isset($blog) ?  'Update Blog' : 'Create Blog',
+    ])
+ 
 
-                    <div class="form-group mb-3">
-                        <label for="category_id">Category</label>
-                        <select name="category_id" class="form-control">
-                            <option value="">-- Select Category --</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+        <div class="row g-2">
+            <div class="col-lg-6">
 
-                    <div class="form-group mb-3">
-                        <label for="description">Short Description</label>
-                        <textarea name="description" rows="2" class="form-control" placeholder="Brief summary..."></textarea>
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <label for="body">Blog Body Content</label>
-                        <textarea name="body" rows="6" class="form-control" placeholder="Write full content here..."></textarea>
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <label for="image">Featured Image</label>
-                        <input type="file" name="image" class="form-control" accept="image/*">
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">Publish Blog</button>
-                </form>
-            </div>
-        </div>
+                @include('admin.components.forms.input', [
+                    'name' => 'title',
+                    'label' => 'Title',
+                    'required' => true,
+                    'id' => 'title',
+                    'value' => old('title', $blog->title ?? '')
+                ])
     </div>
+
+
+
+                    <div class="col-lg-12">
+                @include('admin.components.forms.text-area', [
+                    'name' => 'description',
+                    'label' => 'Description',
+                    'required' => true,
+                    'id' => 'description',
+                    'value' => old('description', $blog->description ?? '')
+                ])
+                </div>
+
+
+
+                  <div class="col-lg-12">
+                @include('admin.components.forms.text-area', [
+                    'name' => 'body',
+                    'label' => 'Body',
+                    'required' => true,
+                    'id' => 'body',
+                    'value' => old('body', $blog->body ?? '')
+                ])
+                </div>
+
+
+                
+
+                <div class="col-lg-6">
+                @include('admin.components.forms.file-uploader', [
+                    'name' => 'image',
+                    'label' => 'Image',
+                    'required' => true,
+                    'id' => 'image',
+                    'value' => old('image', isset($blog) && $blog->image ?  asset('storage/'.$blog->image) :'')
+                ])
+
+
+                                </div>
+
+
+
+                              
+
+
+
+
+
+                <div class="col-lg-6">
+
+            @include('admin.components.forms.select', [
+                'name' => 'category_id',
+                'label' => 'Categories',
+                'options' => $categories->map(function($category) {
+                    return [
+                        'value' => $category->id,
+                        'label' => $category->name,
+                    ];
+                })
+                ->toArray(),
+                'id' => 'category_id',
+                'classes'=>'select2',
+                'multiple'=>true,
+                'default'=> isset($blog) ? $blog->Categories->pluck('id')->toArray() : [],
+                'required'=>true
+            ])
+                        
+        </div>
+
+
+
+
+          <div class="col-lg-6">
+
+            @include('admin.components.forms.select', [
+                'name' => 'tags',
+                'label' => 'Tags',
+                'options' =>isset($blog) ?$blog->Tags->map(function($tag) {
+                    return [
+                        'value' => $tag->name,
+                        'label' => $tag->name,
+                    ];
+                })
+                ->toArray()
+                :[],
+                'id' => 'tags',
+                'classes'=>'selectTags2',
+                'multiple'=>true,
+                'default'=> isset($blog) ? $blog->Tags->pluck('name')->toArray() : []
+            ])
+                        
+        </div>
+
+                                         
+
+
+                                </div>
+
+
+    @endcomponent
+
+
+
+
+
+
+
+    {{-- sumbit button --}}
+    @component('admin.components.container')
+        <button type="submit" form="home-settings-form" class="btn btn-success">Save Blog</button>
+    @endcomponent
+
+
+
+
+        </div>
+    
+
+                                </form>
+
 @endsection
-
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/additional-methods.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ckeditor/4.14.1/ckeditor.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            $("#blogForm").validate({
-                rules: {
-                    title: {
-                        required: true,
-                        minlength: 5
-                    },
-                    category_id: {
-                        required: true
-                    },
-                    description: {
-                        required: true,
-                        maxlength: 500
-                    },
-                    body: {
-                        required: true,
-                        minlength: 50
-                    },
-                    image: {
-                        required: true,
-                        extension: "jpg|jpeg|png|webp"
-                    }
-                },
-                messages: {
-                    category_id: "Please select a category",
-                    body: "Content must be at least 50 characters long"
-                },
-                errorElement: 'span',
-                errorPlacement: function(error, element) {
+<script>
+
+
+        CKEDITOR.replace('body');
+        CKEDITOR.replace('description');
+        
+          $('#home-settings-form').validate({
+
+                errorPlacement: function (error, element) {
                     error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
-                },
-                highlight: function(element) {
-                    $(element).addClass('is-invalid');
-                },
-                unhighlight: function(element) {
-                    $(element).removeClass('is-invalid');
-                }
-            });
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid').removeClass('is-valid');
+            },
+            unhighlight: function (element, errorClass, validClass
+        ) {
+                $(element).addClass('is-valid').removeClass('is-invalid');
+            },
+            submitHandler: function (form) {
+                const formData = new FormData(form);
+
+                formData.append('body', CKEDITOR.instances['body'].getData());
+                formData.append('description', CKEDITOR.instances['description'].getData());
+
+
+
+                axios.post("{{isset($blog) ?route('admin.blog.update',$blog->id) : route('admin.blog.store') }}", formData)
+                    .then(response => {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.data.message || 'Blog updated successfully.',
+                            
+                        });
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'An error occurred while updating settings.',
+                            text: error.response.data.message || 'Please try again later.'
+                        });
+                    });
+                return false;
+            }
         });
-    </script>
+
+
+        $('.select2').select2({
+            width: '100%'
+        });
+
+           $('.selectTags2').select2({
+            width: '100%',
+            tags: true,
+        });
+
+
+
+</script>
+
 @endpush

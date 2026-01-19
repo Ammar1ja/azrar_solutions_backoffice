@@ -101,12 +101,12 @@
                                 <ul class="nav nav-collapse">
                                     {{-- Blogs List --}}
                                     <li>
-                                        <a href="{{ route('admin.blogs.index') }}">
+                                        <a href="{{ route('admin.blog.index') }}">
                                             <span class="sub-item">List</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="{{ route('admin.blogs.create') }}">
+                                        <a href="{{ route('admin.blog.create') }}">
                                             <span class="sub-item">Create</span>
                                         </a>
                                     </li>
