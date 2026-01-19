@@ -7,13 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Client extends Model
 {
-    public function client()
-    {
-        return $this->BelongsTo(Country::class);
-    }
-
     public function project()
     {
         return $this->hasMany(Project::class);
+    }
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 }
