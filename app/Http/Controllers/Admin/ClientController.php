@@ -59,7 +59,7 @@ class ClientController extends Controller
     public function edit(Client $client) // Using Route Model Binding
     {
         $countries = Country::all();
-        return view('admin.client.edit', compact('client', 'countries'));
+        return view('admin.client.create', compact('client', 'countries'));
     }
 
     /**
@@ -98,10 +98,7 @@ class ClientController extends Controller
         if ($client->client_logo) {
             Storage::disk('public')->delete($client->client_logo);
         }
-
         $client->delete();
-
-        return redirect()->route('admin.client.index')
-            ->with('success', 'Client deleted successfully!');
+        return successResponse('Client deleted successfully.');
     }
 }

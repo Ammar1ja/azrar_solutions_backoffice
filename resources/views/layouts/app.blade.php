@@ -101,18 +101,10 @@
                             </a>
                             <div class="collapse" id="blogs-collapse">
                                 <ul class="nav nav-collapse">
-                                    {{-- Blogs List --}}
-                                    <li>
-                                        <a href="{{ route('admin.blog.index') }}">
-                                            <span class="sub-item">List</span>
-                                        </a>
+                                    <li><a href="{{ route('admin.blog.index') }}"><span class="sub-item">List</span></a>
                                     </li>
-                                    <li>
-                                        <a href="{{ route('admin.blog.create') }}">
-                                            <span class="sub-item">Create</span>
-                                        </a>
-                                    </li>
-
+                                    <li><a href="{{ route('admin.blog.create') }}"><span
+                                                class="sub-item">Create</span></a></li>
                                 </ul>
                             </div>
                         </li>
@@ -168,7 +160,7 @@
                             </div>
                         </li>
 
-                        {{-- Countries (NEW SECTION) --}}
+                        {{-- Countries --}}
                         <li class="nav-item">
                             <a data-bs-toggle="collapse" href="#countries-collapse">
                                 <i class="fas fa-globe-americas"></i>
@@ -177,17 +169,46 @@
                             </a>
                             <div class="collapse" id="countries-collapse">
                                 <ul class="nav nav-collapse">
+                                    <li><a href="{{ route('admin.country.index') }}"><span
+                                                class="sub-item">List</span></a></li>
+                                    <li><a href="{{ route('admin.country.create') }}"><span class="sub-item">Add
+                                                New</span></a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        {{-- FAQs (NEW) --}}
+                        <li class="nav-item">
+                            <a data-bs-toggle="collapse" href="#faq-collapse">
+                                <i class="fas fa-question-circle"></i>
+                                <p>FAQs</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="faq-collapse">
+                                <ul class="nav nav-collapse">
+                                    <li><a
+                                            href="{{ Route::has('admin.faq.index') ? route('admin.faq.index') : '#' }}"><span
+                                                class="sub-item">List</span></a></li>
+                                    <li><a
+                                            href="{{ Route::has('admin.faq.create') ? route('admin.faq.create') : '#' }}"><span
+                                                class="sub-item">Create</span></a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        {{-- Forms Section (NEW) --}}
+                        <li class="nav-item">
+                            <a data-bs-toggle="collapse" href="#forms-collapse">
+                                <i class="fas fa-file-alt"></i>
+                                <p>Forms</p>
+                                <span class="caret"></span>
+                            </a>
+                            <div class="collapse" id="forms-collapse">
+                                <ul class="nav nav-collapse">
                                     <li>
-                                        {{-- Check if this route exists or change to # --}}
                                         <a
-                                            href="{{ Route::has('admin.country.index') ? route('admin.country.index') : '#' }}">
-                                            <span class="sub-item">List</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a
-                                            href="{{ Route::has('admin.country.create') ? route('admin.country.create') : '#' }}">
-                                            <span class="sub-item">Add New</span>
+                                            href="{{ Route::has('admin.booking.index') ? route('admin.booking.index') : '#' }}">
+                                            <span class="sub-item">Book a Call</span>
                                         </a>
                                     </li>
                                 </ul>
