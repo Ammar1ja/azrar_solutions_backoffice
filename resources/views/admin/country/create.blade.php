@@ -100,9 +100,7 @@
                             icon: 'success',
                             title: response.data.message || 'Country saved successfully.',
                         }).then(() => {
-                            if (!"{{ isset($country) }}") {
-                                window.location.href = "{{ route('admin.country.index') }}";
-                            }
+                            window.location.href = "{{ route('admin.country.index') }}";
                         });
                     })
                     .catch(error => {

@@ -16,7 +16,10 @@ class BlogController extends Controller
 
     public function index(BlogDataTable $dataTable)
     {
-        return $dataTable->render('admin.blog.index');
+
+        $categories = Category::all();
+
+        return $dataTable->render('admin.blog.index',compact('categories'));
     }
 
 

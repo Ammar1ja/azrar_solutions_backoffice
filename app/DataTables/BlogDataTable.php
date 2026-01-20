@@ -75,6 +75,12 @@ class BlogDataTable extends DataTable
     {
         return $model->newQuery()
             ->with(['Categories','Tags'])
+            ->when($this->request()->filled('category_id'), function ($query) {
+                $categoryId = $this->request()->get('category_id');
+                $query->whereHas('Categories', function ($q) use ($categoryId) {
+                    $q->where('categories.id', $categoryId);
+                });
+            })
           
           
         ;
@@ -86,7 +92,7 @@ class BlogDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('data-table')
+            ->setTableId('data-table')  
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->ajaxWithForm(url()->current(),'#filter-form')
