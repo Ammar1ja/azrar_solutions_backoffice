@@ -5,3 +5,9 @@
 .dataTable{
     overflow-x: auto !important;
 }
+
+
+.dropzone .dz-preview .dz-image img{
+    width: 100%;
+    height: auto;
+}

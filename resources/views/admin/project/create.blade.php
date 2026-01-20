@@ -105,8 +105,9 @@
                     'label' => 'Thumbnail',
                     'required' => true,
                     'id' => 'thumbnail',
-                    'value' => old('thumbnail', isset($project) && $project->thumbnail ?  asset('storage/'.$project->thumbnail) :'')
-                ])
+                    'value' => old('thumbnail', isset($project) && $project->thumbnail ?  asset('storage/'.$project->thumbnail) :''),
+                    'accept'=>'image/*'
+               ])
 
 
                                 </div>
@@ -119,8 +120,9 @@
                     'label' => 'Project Video',
                     'required' => true,
                     'id' => 'project_video',
-                    'value' => old('project_video', isset($project) && $project->project_video ?  asset('storage/'.$project->project_video) :'')
-                ])
+                    'value' => old('project_video', isset($project) && $project->project_video ?  asset('storage/'.$project->project_video) :''),
+                    'accept'=>'video/*',
+               ])
 
 
                                 </div>
@@ -181,6 +183,23 @@
                 </div>
 
 
+
+            <div class="col-lg-12">
+
+                
+                                                                
+                <div class="form-group">
+                    <label for="project_images">Project Images</label>
+                    <div id="projectDropzone" class="dropzone"></div>
+
+</div>
+
+                </div>
+
+
+
+
+
                                 </div>
 
 
@@ -207,8 +226,83 @@
 
 @endsection
 @push('scripts')
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css"
+  type="text/css"
+/>
+
+
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+
 
 <script>
+
+
+
+
+window.existingProjectImages = @json($existingProjectImages ?? []);
+
+
+
+let newProjectImages = [];     // Files (new uploads)
+let oldProjectImages = [];     // IDs or paths (existing images)
+
+Dropzone.autoDiscover = false;
+
+const dz = new Dropzone("#projectDropzone", {
+    url: "/", // won't be used
+    autoProcessQueue: false,
+    uploadMultiple: true,
+    addRemoveLinks: true,
+    acceptedFiles: "image/*",
+    paramName: "project_images[]",
+
+    init() {
+        // 🔁 EDIT MODE: preload old images
+        if (window.existingProjectImages) {
+            existingProjectImages.forEach(image => {
+                const mockFile = {
+                    name: image.name,
+                    size: image.size || 12345,
+                    isOld: true,
+                    id: image.id
+                };
+
+                this.emit("addedfile", mockFile);
+                this.emit("thumbnail", mockFile, image.url);
+                this.emit("complete", mockFile);
+
+                oldProjectImages.push(image.id);
+            });
+        }
+    }
+});
+
+
+
+dz.on("addedfile", file => {
+    if (!file.isOld) {
+        newProjectImages.push(file);
+    }
+});
+
+dz.on("removedfile", file => {
+
+    // 🧹 Remove NEW image
+    if (!file.isOld) {
+        newProjectImages = newProjectImages.filter(f => f !== file);
+    }
+
+    // 🧹 Remove OLD image
+    if (file.isOld) {
+        oldProjectImages = oldProjectImages.filter(id => id !== file.id);
+    }
+});
+
+
+
+
     function addFeatureRow() {
             let row =`@include('admin.service.components.feature-row',['is_new'=>true])`;
             row =row.replaceAll('new_row', Date.now());
@@ -237,7 +331,16 @@
             submitHandler: function (form) {
                 const formData = new FormData(form);
 
+  // ✅ new images
+    newProjectImages.forEach((file, index) => {
+        formData.append(`project_images[${index}]`, file);
+    });
 
+    // ✅ remaining old images
+    formData.append(
+        "old_project_images",
+        JSON.stringify(oldProjectImages)
+    );
 
                 axios.post("{{isset($project) ?route('admin.project.update',$project->id) : route('admin.project.store') }}", formData)
                     .then(response => {
