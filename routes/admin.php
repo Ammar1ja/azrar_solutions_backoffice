@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\BookCallController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -13,6 +15,10 @@ Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 Route::resource('/project', ProjectController::class);
 Route::resource('/service', ServiceController::class);
 Route::resource('/blog', BlogController::class);
+Route::resource('/faq', FaqController::class);
+
+
+Route::get('booking',[BookCallController::class,'index'])->name('book-call.index');
 
 
 

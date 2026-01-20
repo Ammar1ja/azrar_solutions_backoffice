@@ -20,6 +20,10 @@ class Project extends Model
         'project_video',
         'featured',
     ];
+
+    protected $casts = [
+        'project_images' => 'array',
+    ];
     public function Services()
     {
         return $this->belongsToMany(Service::class, ProjectService::class);
