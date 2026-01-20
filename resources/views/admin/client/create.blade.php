@@ -4,103 +4,140 @@
     <div class="page-inner">
         <div class="page-header">
             <h4 class="page-title">Clients</h4>
-            <ul class="breadcrumbs">
-                <li class="nav-home"><a href="#"><i class="flaticon-home"></i></a></li>
-                <li class="separator"><i class="flaticon-right-arrow"></i></li>
-                <li class="nav-item"><a href="{{ route('admin.client.index') }}">Clients</a></li>
-                <li class="separator"><i class="flaticon-right-arrow"></i></li>
-                <li class="nav-item"><a href="#">Create</a></li>
-            </ul>
         </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Create New Client</div>
+        @component('admin.components.container', [
+            'title' => isset($client) ? 'Edit Client: ' . $client->client_en_name : 'Create New Client',
+            'buttons' => [['text' => 'Cancel', 'url' => route('admin.client.index'), 'type' => 'danger']],
+        ])
+            {{-- Added ID "client-form" to the form tag --}}
+            <form id="client-form"
+                action="{{ isset($client) ? route('admin.client.update', $client->id) : route('admin.client.store') }}"
+                method="POST" enctype="multipart/form-data">
+
+                @csrf
+                @if (isset($client))
+                    @method('PUT')
+                @endif
+
+                <div class="row">
+                    {{-- Arabic Name --}}
+                    <div class="col-md-6">
+                        @include('admin.components.forms.input', [
+                            'name' => 'client_ar_name',
+                            'label' => 'Client Name (Arabic)',
+                            'value' => old('client_ar_name', $client->client_ar_name ?? ''),
+                            'required' => true,
+                            'id' => 'client_ar_name',
+                        ])
                     </div>
-                    <form action="{{ route('admin.client.store') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="client_ar_name">Client Name (Arabic)</label>
-                                        <input type="text"
-                                            class="form-control @error('client_ar_name') is-invalid @enderror"
-                                            id="client_ar_name" name="client_ar_name" placeholder="اسم العميل"
-                                            value="{{ old('client_ar_name') }}">
-                                        @error('client_ar_name')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="client_en_name">Client Name (English)</label>
-                                        <input type="text"
-                                            class="form-control @error('client_en_name') is-invalid @enderror"
-                                            id="client_en_name" name="client_en_name" placeholder="Enter English Name"
-                                            value="{{ old('client_en_name') }}">
-                                        @error('client_en_name')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                </div>
+                    {{-- English Name --}}
+                    <div class="col-md-6">
+                        @include('admin.components.forms.input', [
+                            'name' => 'client_en_name',
+                            'label' => 'Client Name (English)',
+                            'value' => old('client_en_name', $client->client_en_name ?? ''),
+                            'required' => true,
+                            'id' => 'client_en_name',
+                        ])
+                    </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="country_id">Country</label>
-                                        <select class="form-control @error('country_id') is-invalid @enderror"
-                                            id="country_id" name="country_id">
-                                            <option value="">Select Country</option>
-                                            @foreach ($countries as $country)
-                                                <option value="{{ $country->id }}"
-                                                    {{ old('country_id') == $country->id ? 'selected' : '' }}>
-                                                    {{ $country->name_en }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('country_id')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                </div>
+                    {{-- Country Select --}}
+                    <div class="col-md-6">
+                        @include('admin.components.forms.select', [
+                            'name' => 'country_id',
+                            'label' => 'Country',
+                            'options' => $countries->map(
+                                    fn($c) => [
+                                        'value' => $c->id,
+                                        'label' => $c->name_en,
+                                    ])->toArray(),
+                            'default' => old('country_id', $client->country_id ?? ''),
+                            'required' => true,
+                        ])
+                    </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="website_url">Website URL (Optional)</label>
-                                        <input type="url"
-                                            class="form-control @error('website_url') is-invalid @enderror" id="website_url"
-                                            name="website_url" placeholder="https://example.com"
-                                            value="{{ old('website_url') }}">
-                                        @error('website_url')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                </div>
+                    {{-- Website URL --}}
+                    <div class="col-md-6">
+                        @include('admin.components.forms.input', [
+                            'type' => 'url',
+                            'name' => 'website_url',
+                            'label' => 'Website URL (Optional)',
+                            'value' => old('website_url', $client->website_url ?? ''),
+                            'id' => 'website_url',
+                        ])
+                    </div>
 
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="client_logo">Client Logo</label>
-                                        <input type="file"
-                                            class="form-control-file @error('client_logo') is-invalid @enderror"
-                                            id="client_logo" name="client_logo">
-                                        @error('client_logo')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-action">
-                            <button type="submit" class="btn btn-success">Submit</button>
-                            <a href="{{ route('admin.client.index') }}" class="btn btn-danger">Cancel</a>
-                        </div>
-                    </form>
+                    {{-- File Uploader (Logo) --}}
+                    <div class="col-md-12">
+                        @include('admin.components.forms.file-uploader', [
+                            'name' => 'client_logo',
+                            'label' => 'Client Logo',
+                            'accept' => 'image/*',
+                            'required' => !isset($client),
+                            'id' => 'client_logo',
+                            'value' =>
+                                isset($client) && $client->client_logo
+                                    ? asset('storage/' . $client->client_logo)
+                                    : '',
+                        ])
+                    </div>
                 </div>
-            </div>
-        </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success">
+                        {{ isset($client) ? 'Update Client' : 'Submit' }}
+                    </button>
+                </div>
+            </form>
+        @endcomponent
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        $('#client-form').validate({
+            errorPlacement: function(error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function(element) {
+                $(element).addClass('is-invalid').removeClass('is-valid');
+            },
+            unhighlight: function(element) {
+                $(element).addClass('is-valid').removeClass('is-invalid');
+            },
+            submitHandler: function(form) {
+                const formData = new FormData(form);
+                // Dynamically determine the URL based on create or edit mode
+                const url =
+                    "{{ isset($client) ? route('admin.client.update', $client->id) : route('admin.client.store') }}";
+
+                axios.post(url, formData)
+                    .then(response => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: response.data.message || 'Client saved successfully.',
+                        }).then(() => {
+                            // Redirect to index after success
+                            window.location.href = "{{ route('admin.client.index') }}";
+                        });
+                    })
+                    .catch(error => {
+                        let errorMessage = 'An error occurred while saving.';
+                        if (error.response && error.response.data.message) {
+                            errorMessage = error.response.data.message;
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMessage
+                        });
+                    });
+                return false; // Prevent default form submit
+            }
+        });
+    </script>
+@endpush

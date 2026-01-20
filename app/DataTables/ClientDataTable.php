@@ -24,8 +24,8 @@ class ClientDataTable extends DataTable
                 return $row->country ? $row->country->name : '-';
             })
             ->addColumn('action', function ($row) {
-                $editUrl = route('admin.client.edit', $row->id);
-                $deleteUrl = route('admin.client.destroy', $row->id);
+                $editUrl = route('admin.client.edit', $row->id);    
+                $deleteUrl = route('admin.client.destroy', $row);
                 return '<div class="d-flex gap-2">
                             <a href="' . $editUrl . '" class="btn btn-sm btn-primary">Edit</a>
                             <button onclick="deleteFunction(\'' . $deleteUrl . '\')" class="btn btn-sm btn-danger">Delete</button>
