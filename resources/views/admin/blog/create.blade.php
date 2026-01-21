@@ -92,6 +92,25 @@
                     </div>
 
 
+                    <div class="col-lg-6">
+
+                        @include('admin.components.forms.select', [
+                            'name' => 'country_id',
+                            'label' => 'Countries',
+                            'options' => $countries->map(function ($country) {
+                                    return [
+                                        'value' => $country->id,
+                                        'label' => $country->name_en,
+                                    ];
+                                })->toArray(),
+                            'id' => 'country_id',
+                            'classes' => 'select2',
+                            'multiple' => true,
+                            'default' => isset($blog) ? $blog->Countries->pluck('id')->toArray() : [],
+                            'required' => true,
+                        ])
+
+                    </div>
 
 
                     <div class="col-lg-6">
@@ -190,13 +209,16 @@
         });
 
 
-        $('.select2').select2({
-            width: '100%'
+$(document).ready(function(){
+  $('.select2').select2({
         });
 
         $('.selectTags2').select2({
             width: '100%',
             tags: true,
         });
+
+});
+      
     </script>
 @endpush

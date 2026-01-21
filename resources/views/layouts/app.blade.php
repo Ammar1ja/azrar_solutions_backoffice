@@ -256,7 +256,7 @@
                                     </div> --}}
                                     <span class="profile-username">
                                         <span class="op-7">Hi,</span>
-                                        <span class="fw-bold">{{ auth()->user()->name }}</span>
+                                        <span class="fw-bold">{{ auth()->user()->name ?? '' }}</span>
                                     </span>
                                 </a>
                             </li>

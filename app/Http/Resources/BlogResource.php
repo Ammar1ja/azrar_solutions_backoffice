@@ -18,15 +18,21 @@ class BlogResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'image' => $this->image,
+            'image' => $this->image ? asset('storage/' . $this->image) : null,
             'description' => $this->description,
             'body' => $this->body,
-            'category' => new CategoryResource($this->whenLoaded('category')),
-            'tags' => TagResource::collection($this->whenLoaded('tags')),
-            'created_at' => [
-                'date' => $this->created_at->toDateString(),
-                'time' => $this->created_at->format('g:ia'),
-            ],
+            'categories' => $this->whenLoaded('Categories', function () {
+                return CategoryResource::collection($this->Categories);
+            }),
+            'tags' => $this->whenLoaded('Tags', function () {
+                return TagResource::collection($this->Tags);
+            }),
+            'country' => $this->whenLoaded('Country', function () {
+                return new CountryRessource($this->Country);
+            }),
+            'date' => $this->created_at->toDateString(),
+            'time' => $this->created_at->format('g:ia'),
+
         ];
     }
 }
