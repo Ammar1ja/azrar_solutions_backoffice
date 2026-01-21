@@ -15,7 +15,7 @@ class ServiceController extends Controller
     public function index(Request $request)
     {
         $services = Service::with('Features')->get();
-        return ServiceResource::collection($services); // wrap collection in resource
+        return successResponse(ServiceResource::collection($services), 'Services Retieved Successfully'); // wrap collection in resource
     }
 
     /**
@@ -23,7 +23,7 @@ class ServiceController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $service = Service::with('Features')->findOrFail($id);
-        return new ServiceResource($service); // single resource
+        $service = Service::with(['Features', 'Projects'])->findOrFail($id);
+        return successresponse(new ServiceResource($service), 'Service Retireved Successfully'); // single resource
     }
 }

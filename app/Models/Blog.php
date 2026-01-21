@@ -15,13 +15,15 @@ class Blog extends Model
         'title',
         'body',
         'description',
+        'country_id',
     ];
 
     /**
      * Relationship: Blog belongs to one category
      */
-    public function Categories(){
-        return $this->belongsToMany(Category::class,BlogCategory::class);
+    public function Categories()
+    {
+        return $this->belongsToMany(Category::class, BlogCategory::class);
     }
     /**
      * Relationship: Blog belongs to many tags
@@ -29,5 +31,17 @@ class Blog extends Model
     public function Tags()
     {
         return $this->hasMany(related: BlogTag::class);
+    }
+
+
+    public function Views()
+    {
+        return $this->hasMany(BlogView::class);
+    }
+
+
+    public function Countries()
+    {
+        return $this->belongsToMany(Country::class, BlogCountry::class);
     }
 }

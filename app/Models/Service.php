@@ -24,4 +24,10 @@ class Service extends Model
     {
         return $this->hasMany(ServiceFeature::class);
     }
+
+
+    public function Projects()
+    {
+        return $this->belongsToMany(Project::class, ProjectService::class);
+    }
 }

@@ -14,7 +14,7 @@ class ProjectResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $lang = $request->query('lang', 'en');
+        $lang = app()->getLocale();
 
         return [
             'id' => $this->id,
@@ -23,11 +23,22 @@ class ProjectResource extends JsonResource
             'project_date' => $this->{"{$lang}_project_date"},
             'project_url' => $this->project_url,
             'thumbnail' => $this->thumbnail,
-            'project_images' => json_decode($this->project_images),
+            'project_images' => collect($this->project_images)->map(function ($image) {
+                return asset('storage/' . $image);
+            }),
             'project_video' => $this->project_video,
             'featured' => $this->featured,
-            'service' => new ServiceResource($this->service),
-            'client' => new ClientResource($this->client),
+            'services' => $this->whenLoaded('Services', function () use ($lang) {
+                return ServiceResource::collection($this->Services)->map(function ($service) use ($lang) {
+                    return [
+                        'id' => $service->id,
+                        'title' => $service->{"{$lang}_title"},
+                    ];
+                });
+            }),
+            'client' => $this->whenLoaded('Client', function () {
+                return new ClientResource($this->Client);
+            }),
 
         ];
     }

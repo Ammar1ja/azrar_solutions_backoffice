@@ -75,6 +75,7 @@ class BlogDataTable extends DataTable
     {
         return $model->newQuery()
             ->with(['Categories','Tags'])
+            ->withCount('Views')
             ->when($this->request()->filled('category_id'), function ($query) {
                 $categoryId = $this->request()->get('category_id');
                 $query->whereHas('Categories', function ($q) use ($categoryId) {
@@ -122,6 +123,13 @@ class BlogDataTable extends DataTable
             ->content('-'),
           
             Column::make('categories')
+            ->orderable(false)
+            ->searchable(false)
+            ->content('-'),
+
+
+
+             Column::make('views_count')
             ->orderable(false)
             ->searchable(false)
             ->content('-'),

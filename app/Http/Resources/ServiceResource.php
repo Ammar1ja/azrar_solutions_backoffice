@@ -21,10 +21,13 @@ class ServiceResource extends JsonResource
             'title' => $this->{"{$lang}_title"},
             'description' => $this->{"{$lang}_description"},
             'button_text' => $this->{"{$lang}_button_text"},
-            'image' => asset('storage/'.$this->image),
-            'video' => asset('storage/'.$this->video),
-            'icon' => asset('storage/'.$this->icon),
+            'image' => asset('storage/' . $this->image),
+            'video' => asset('storage/' . $this->video),
+            'icon' => asset('storage/' . $this->icon),
             'features' => ServiceFeatureResource::collection($this->whenLoaded('Features')),
+            'projects' => $this->whenLoaded('Projects', function () {
+                return ProjectResource::collection($this->Projects);
+            }),
         ];
     }
 }

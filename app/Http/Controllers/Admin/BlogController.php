@@ -7,6 +7,7 @@ use App\DataTables\BlogsDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use App\Models\Category; // Import Category to show in the dropdown
+use App\Models\Country;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -19,7 +20,7 @@ class BlogController extends Controller
 
         $categories = Category::all();
 
-        return $dataTable->render('admin.blog.index',compact('categories'));
+        return $dataTable->render('admin.blog.index', compact('categories'));
     }
 
 
@@ -27,8 +28,9 @@ class BlogController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $countries = Country::all();
 
-        return view('admin.blog.create', compact('categories'));
+        return view('admin.blog.create', compact('categories', 'countries'));
     }
 
     public function store(Request $request)
@@ -64,6 +66,7 @@ class BlogController extends Controller
             $blog = Blog::create($data);
 
             $blog->Categories()->sync($request->category_id ?? []);
+            $blog->Countries()->sync($request->country_id ?? []);
 
             if ($request->filled('tags')) {
                 foreach ($request->tags as $tagName) {
@@ -79,7 +82,10 @@ class BlogController extends Controller
     public function edit(Blog $blog)
     {
         $categories = Category::all();
-        return view('admin.blog.create', compact('blog', 'categories'));
+
+        $countries = Country::all();
+
+        return view('admin.blog.create', compact('blog', 'categories', 'countries'));
     }
 
 
@@ -118,13 +124,14 @@ class BlogController extends Controller
             $blog->update($data);
 
             $blog->Categories()->sync($request->category_id ?? []);
+            $blog->Countries()->sync($request->country_id ?? []);
         });
 
 
 
         $blog->Tags()->delete();
         if ($request->filled('tags')) {
-        
+
             foreach ($request->tags as $tagName) {
                 $blog->Tags()->create(['name' => trim($tagName)]);
             }
